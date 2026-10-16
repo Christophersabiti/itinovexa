@@ -1,0 +1,17 @@
+{
+  "name": "@itinovexa/worker",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Background jobs (pg-boss): email, PDF, workflows, syncs",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.3"
+  }
+}

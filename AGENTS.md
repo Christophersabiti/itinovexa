@@ -84,13 +84,13 @@ docs/               PRD, specs, ADRs, epics
 
 Filled in by EPIC-001. Expected:
 
-| Command | Does |
-|---------|------|
-| `pnpm dev` | Local stack |
-| `pnpm db:reset` | Recreate the local DB, run migrations and seed |
-| `pnpm test` | Unit tests |
-| `pnpm test:integration` | Integration tests against a real Postgres |
-| `pnpm verify` | typecheck + lint + all tests (what CI runs) |
+| Command                 | Does                                           |
+| ----------------------- | ---------------------------------------------- |
+| `pnpm dev`              | Local stack                                    |
+| `pnpm db:reset`         | Recreate the local DB, run migrations and seed |
+| `pnpm test`             | Unit tests                                     |
+| `pnpm test:integration` | Integration tests against a real Postgres      |
+| `pnpm verify`           | typecheck + lint + all tests (what CI runs)    |
 
 ## 8. PR description must contain
 
@@ -99,6 +99,7 @@ Epic + slice · risk class (R0–R3) · migrations (yes/no + list) · new depend
 ## 9. Fixed review prompt (for the reviewing agent)
 
 > Review this diff against AGENTS.md and the referenced epic. List **violations only**, each with file:line, the rule broken and a one-line fix. Check in particular:
+>
 > - tenant isolation (`organisation_id`, RLS, `withTenant`)
 > - money handling (no `number`/float, server-side only)
 > - immutability (quotes, booking history, issued finance records)

@@ -40,6 +40,10 @@ jobs:
   security:
     name: security
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # gitleaks-action lists the PR's commits to scan them.
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
         with:

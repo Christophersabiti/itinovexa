@@ -6,9 +6,11 @@
 - **Feature flag:** none
 
 ## Goal
+
 A working monorepo that a developer or agent can clone and run with one command. It has CI gates that block unsafe changes, and a proven tenancy mechanism, so that every later epic inherits isolation, auditing and money safety without rebuilding them.
 
 ## In scope
+
 - pnpm + Turborepo monorepo with the layout in `AGENTS.md` §6. Only these packages are created now: `web`, `worker` (stub), `db`, `tenancy`, `money`, `audit`, `shared`.
 - Local stack: Supabase via Docker (`supabase start`), `pnpm dev`, `pnpm db:reset`, `.env.example`.
 - Two tables: `organisations` and `audit_logs` (below).
@@ -17,14 +19,16 @@ A working monorepo that a developer or agent can clone and run with one command.
 - `packages/money`: `Money` type on decimal.js with currency precision (UGX 0, USD/EUR/GBP/KES/ZAR 2), `add`, `sub`, `mul`, `allocate`, `round(mode)`, and string (de)serialisation.
 - `packages/audit`: `writeAudit(tx, { action, entity, entityId, oldValue, newValue })`, which takes the user, org, IP and request ID from the context.
 - `GET /api/v1/health` checks DB connectivity (no auth, no tenant data).
-- Seed: two demo orgs, *Pearl Safaris (Demo)* (base currency UGX) and *Rival Tours (Demo)* (base currency USD).
+- Seed: two demo orgs, _Pearl Safaris (Demo)_ (base currency UGX) and _Rival Tours (Demo)_ (base currency USD).
 - CI (GitHub Actions): `typecheck`, `lint`, `format`, `unit`, `integration`, `tenant-isolation`, `schema-lint`, `migrations`, `money-lint`, `security`.
 - Fill in `AGENTS.md` §7 with the real commands.
 
 ## Out of scope
+
 Auth, users and RBAC (EPIC-002). Org settings UI (EPIC-003). Any business tables. Deployment to staging is a follow-up slice once the hosting accounts exist.
 
 ## Data
+
 Provisional. Copy these into `03-DATABASE-SCHEMA.md` when that doc is written.
 
 **`organisations`**: `id uuid pk`, `name text not null`, `slug text unique not null`, `base_currency char(3) not null`, `timezone text not null default 'Africa/Kampala'`, `status text not null check in ('active','suspended')`, `created_at`, `created_by uuid null`, `updated_at`, `updated_by uuid null`.
@@ -36,6 +40,7 @@ RLS: `organisation_id = current_setting('app.org_id')::uuid`. **`app_user` has I
 `audit_logs` is append-only, so it has no `updated_*` columns. `schema-lint` keeps an explicit allow-list for append-only tables.
 
 ## Slices (one PR each)
+
 1. **Scaffold:** monorepo, tooling, `pnpm verify`, CI skeleton (typecheck, lint, format, unit, security).
 2. **DB + tenancy:** local Supabase, Drizzle, both tables, roles, RLS, `withTenant`, seed, `db:reset`.
 3. **Guards:** `tenant-isolation`, `schema-lint` and `migrations` test suites, wired into CI.
@@ -43,7 +48,9 @@ RLS: `organisation_id = current_setting('app.org_id')::uuid`. **`app_user` has I
 5. **Health + docs:** health endpoint, worker stub, `AGENTS.md` §7, README quick-start.
 
 ## File scope
+
 Agents may edit only:
+
 - the repo root config files
 - `apps/web`, `apps/worker`
 - `packages/{db,tenancy,money,audit,shared}`
@@ -69,6 +76,7 @@ Agents may edit only:
 **AC-7 Audit is append-only.** Given an existing audit row, when `app_user` attempts UPDATE or DELETE, then permission is denied.
 
 **AC-8 Money golden tests.**
+
 - `Money("200.00","USD") × 3 = "600.00" USD`
 - `Money("0.10") + Money("0.20") = "0.30"` exactly
 - `Money("1000","UGX") × 1.18` rounds to `"1180"` UGX (0 dp)
@@ -79,6 +87,7 @@ Agents may edit only:
 **AC-10 Migrations immutable.** Given a migration file already on `main`, when a PR modifies it, then the `migrations` check fails.
 
 ## Definition of Done
+
 - [ ] AC-1…AC-10 automated and green in CI
 - [ ] `AGENTS.md` §7 commands filled in and accurate
 - [ ] `organisations` and `audit_logs` copied into `03-DATABASE-SCHEMA.md`

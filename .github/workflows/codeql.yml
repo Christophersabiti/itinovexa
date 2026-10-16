@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
   actions: read
+  security-events: write
 
 jobs:
   analyze:
@@ -19,17 +20,4 @@ jobs:
       - uses: github/codeql-action/init@v3
         with:
           languages: javascript-typescript
-      # Code scanning upload needs GitHub Code Security on private repos, which this repo
-      # doesn't have. Analyse locally and fail the job on any finding instead.
       - uses: github/codeql-action/analyze@v3
-        with:
-          upload: never
-          output: codeql-results
-      - name: Fail on findings
-        run: |
-          count=$(jq '[.runs[].results[]] | length' codeql-results/*.sarif)
-          echo "CodeQL findings: $count"
-          if [ "$count" -gt 0 ]; then
-            jq -r '.runs[].results[] | "\(.ruleId): \(.locations[0].physicalLocation.artifactLocation.uri):\(.locations[0].physicalLocation.region.startLine) \(.message.text)"' codeql-results/*.sarif
-            exit 1
-          fi
